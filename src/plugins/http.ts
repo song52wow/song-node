@@ -1,20 +1,30 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
-import { config } from '../config';
+import { config, errorCode } from '../config';
+import routes from '../routes';
 
 function serverHandler(req: IncomingMessage, res: ServerResponse) {
-  let data = ''
+  let data: Buffer[] = []
 
-  req.on('data', chunk => data += chunk)
+  const { method, url } = req as { method: string, url: string }
+  
+  res.setHeader('Content-Type', config.contentType)
+  
+  try {
+    routes[method.toLocaleLowerCase()][url]({req, res})
+  } catch (err) {
+    // 找不到接口
+    res.statusCode = 404
+
+    return res.end()
+  }
+
+  req.on('data', chunk => data.push(chunk))
 
   req.on('end', () => {
-    const bin = new Buffer(data)
-
-    console.log(bin.toString('utf-8'));
-    
+    Buffer.concat(data).toString()
   })
 
 
-  res.writeHead(200, { 'Content-Type': config.contentType });
   res.end(`{
     code: 200,
     data: '123'
