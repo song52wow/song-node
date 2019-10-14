@@ -1,6 +1,11 @@
 export enum config {
+  // 端口
   port = 30000,
-  prefix = 'node',
+
+  // 根目录
+  prefix = '/node',
+
+  // 接收的数据格式
   contentType = 'application/json;charset=UTF-8'
 }
 

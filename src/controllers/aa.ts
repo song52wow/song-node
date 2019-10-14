@@ -4,7 +4,10 @@ class aa {
   constructor() { }
 
   // @Get('/aa/list')
-  list() { }
+  list() {
+    console.log(123);
+    
+  }
   
   // @Post('/aa/detail')
   detail() {}

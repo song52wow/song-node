@@ -5,7 +5,7 @@ interface routeConfig {
 }
 
 const routes = {
-  '/aa': aa
+  'post /aa': aa.list
 }
 
 export default routes as routeConfig

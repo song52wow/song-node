@@ -2,15 +2,20 @@ import http, { IncomingMessage, ServerResponse } from 'http'
 import { config, errorCode } from '../config';
 import routes from '../routes';
 
-function serverHandler(req: IncomingMessage, res: ServerResponse) {
-  let data: Buffer[] = []
-
+const serverHandler = (req: IncomingMessage, res: ServerResponse) => {
   const { method, url } = req as { method: string, url: string }
+
+  const prefixRegexp = new RegExp(`^${config.prefix}`)
+  
+  const getRoute = url.replace(prefixRegexp, `${method.toLocaleLowerCase()} `)
   
   res.setHeader('Content-Type', config.contentType)
+
+  console.log(url, getRoute);
+  
   
   try {
-    routes[method.toLocaleLowerCase()][url]({req, res})
+    routes[getRoute]({req, res})
   } catch (err) {
     // 找不到接口
     res.statusCode = 404
@@ -18,17 +23,25 @@ function serverHandler(req: IncomingMessage, res: ServerResponse) {
     return res.end()
   }
 
-  req.on('data', chunk => data.push(chunk))
 
-  req.on('end', () => {
-    Buffer.concat(data).toString()
-  })
-
-
-  res.end(`{
-    code: 200,
-    data: '123'
-  }`);
+  // let data: Buffer[] = []
+  
+  
+  // req.on('data', chunk => data.push(chunk))
+  
+  // req.on('end', () => {
+  //   Buffer.concat(data).toString()
+  // })
+  
+  
+  // res.end(`{
+  //   code: 200,
+  //   data: '123'
+  // }`);
 }
 
-export default http.createServer(serverHandler)
+const server = http.createServer()
+
+server.on('request', serverHandler)
+
+export default server
