@@ -10,9 +10,6 @@ const serverHandler = (req: IncomingMessage, res: ServerResponse) => {
   const getRoute = url.replace(prefixRegexp, `${method.toLocaleLowerCase()} `)
   
   res.setHeader('Content-Type', config.contentType)
-
-  console.log(url, getRoute);
-  
   
   try {
     routes[getRoute]({req, res})

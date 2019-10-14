@@ -1,11 +1,12 @@
-import aa from "./controllers/aa";
+import pundix from "./controllers/pundix";
+
 
 interface routeConfig {
   [key: string]: any
 }
 
 const routes = {
-  'post /aa': aa.list
+  'post /setup': pundix.setup
 }
 
 export default routes as routeConfig

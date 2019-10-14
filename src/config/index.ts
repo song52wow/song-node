@@ -9,6 +9,11 @@ export enum config {
   contentType = 'application/json;charset=UTF-8'
 }
 
+export enum pundix {
+  appId = '',
+  appSecret = '',
+}
+
 export enum errorCode {
   'Not Found this Api' = 404
 }
