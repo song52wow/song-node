@@ -3,14 +3,24 @@ function routeDecorator(
   propertyKey: string,
   descriptor: PropertyDescriptor
 ) {
-  descriptor.writable = false
-  
   console.log('target: ', target)
   console.log('propertyKey: ', propertyKey)
   console.log('descriptor: ', descriptor)
 
 
   return descriptor
+}
+
+class Controller {}
+
+export function Prefix(value: any) {
+  console.log(value)
+
+  return (constructor: any) => {
+    console.log('Class: ', constructor)
+
+    return constructor extends  {}
+  }
 }
 
 export function Get(value: any) {
