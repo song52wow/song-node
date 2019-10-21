@@ -6,9 +6,10 @@ interface setRouteMap {
 class Route {
   static routeMap = new Map()
   static prefix = ''
+  static constructorName = ''
 
   static setRouteMap({key, value}: setRouteMap) {
-    Route.routeMap.set(key, this.prefix + value)
+    Route.routeMap.set(this.constructorName + key, this.prefix + value)
   }
 }
 
@@ -26,10 +27,12 @@ function routeDecorator(
 }
 
 export function Prefix(value: any) {
-  // Route.prefix = value
-
   return (constructor: any) => {
-    // console.log('Class: ', constructor)
+    Route.prefix = value
+
+    Route.constructorName = constructor.name
+
+    return constructor
   }
 }
 
@@ -40,29 +43,15 @@ export function Get(value: any) {
 }
 
 export function Post(value: string) {
-
-  
   return (
     target: any,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) => {
-    // const filterTarget = target.replace(/.*( {})$/, '')
-
-    // console.log(filterTarget);
-    
-
-    // Route.setRouteMap({
-    //   key: filterTarget + propertyKey,
-    //   value
-    // })
-
-
-    
-  console.log('target: ', typeof target)
-  console.log('propertyKey: ', propertyKey)
-  console.log('descriptor: ', descriptor)
-
+    Route.setRouteMap({
+      key: propertyKey,
+      value
+    })
 
     return descriptor
   }
