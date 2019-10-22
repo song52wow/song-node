@@ -1,58 +1,83 @@
-interface setRouteMap {
-  key: string;
-  value: string
+import { readdir } from "fs";
+import path from "path";
+
+import Route from "../routes"
+import { _root_ } from "../../config";
+
+const route = new Route()
+
+interface setRouteParam {
+  method: 'post' | 'get' | 'put' | 'delete';
+  value: string;
+  routeFunc: Function;
 }
 
-class Route {
-  static routeMap = new Map()
-  static prefix = ''
-  static constructorName = ''
+function setRouteFormat({method ,value, routeFunc}: setRouteParam) {
+  const routeIndex = `${value} ${method}`
 
-  static setRouteMap({key, value}: setRouteMap) {
-    Route.routeMap.set(this.constructorName + key, this.prefix + value)
-  }
+  route.setRouteArr({ routeIndex, routeFunc})
 }
 
-function routeDecorator(
-  target: any,
-  propertyKey: string,
-  descriptor: PropertyDescriptor
-) {
-  console.log('target: ', target)
-  console.log('propertyKey: ', propertyKey)
-  console.log('descriptor: ', descriptor)
+export function Controller(constructor: any) {
+  route.setConstMap()
 
-
-  return descriptor
+  return constructor
 }
 
 export function Prefix(value: any) {
   return (constructor: any) => {
-    Route.prefix = value
-
-    Route.constructorName = constructor.name
-
+    route.setRouteMap(value)
+    
     return constructor
   }
 }
 
 export function Get(value: any) {
-  console.log(value);
-
-  return routeDecorator
-}
-
-export function Post(value: string) {
-  return (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    Route.setRouteMap({
-      key: propertyKey,
-      value
+  return (target: any, key: string, descriptor: PropertyDescriptor) => { 
+    setRouteFormat({
+      method: 'get',
+      value,
+      routeFunc:descriptor.value
     })
 
     return descriptor
+  }
+}
+
+export function Post(value: string) {
+  return (target: any, key: string, descriptor: PropertyDescriptor) => {
+    setRouteFormat({
+      method: 'post',
+      value,
+      routeFunc: descriptor.value
+    })
+
+    return descriptor
+  }
+}
+
+
+export default class ControllerDirRead {
+  // 读取Controller文件夹
+  static dirFileList(): Promise<string[]> {
+    return new Promise(resolve => {
+      const dirPath = path.join(process.cwd(), _root_, '/controllers')
+  
+      readdir(dirPath, (error, fileList) => {
+        const fileListMap = fileList.map(file => path.resolve(dirPath, file))
+
+        resolve(fileListMap)
+      })
+    })
+  }
+
+  // 实例化
+  static async instantiation() {
+    const controllerList = await this.dirFileList()
+
+    console.log(controllerList);
+    
+
+    controllerList.forEach(list => import(list))
   }
 }

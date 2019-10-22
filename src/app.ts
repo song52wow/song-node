@@ -1,11 +1,9 @@
 
 import { config } from "./config"
 import http from "./plugins/http"
-import './config/controller'
-// import Controller from "./controllers"
+import ControllerDirRead from "./plugins/decorator/controller"
 
-// 实例化所有Controller
-// Controller.instantiation()
-  
+ControllerDirRead.instantiation()
+
 // 启动http服务器
 http.listen(config.port, () => console.log(`http://127.0.0.1:${config.port}`))

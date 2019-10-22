@@ -1,3 +1,5 @@
+export const _root_ = process.env.NODE_ENV === 'production' ? 'dist' : 'src'
+
 export enum config {
   // 端口
   port = 30000,
@@ -6,7 +8,7 @@ export enum config {
   prefix = '/node',
 
   // 接收的数据格式
-  contentType = 'application/json;charset=UTF-8'
+  contentType = 'application/json;charset=UTF-8',
 }
 
 export enum pundix {
