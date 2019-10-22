@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "serve": "cross-env NODE_ENV=development nodemon --inspect ./src/app.ts",
+    "serve": "cross-env NODE_ENV=development nodemon ./src/app.ts",
+    "serve:debug": "nodemon --inspect ./src/app.ts",
     "build": "cross-env NODE_ENV=production parcel build ./src/app.ts --target node --no-source-maps --no-cache"
   },
   "keywords": [],

@@ -1,14 +1,15 @@
 import logs from "../plugins/decorator/logs";
-import { Post, Prefix, Controller, Get } from "../plugins/decorator/controller";
+import { Post, Prefix, Controller } from "../plugins/decorator/controller";
+import { IncomingMessage } from "http";
 
 @Controller
 @Prefix('/api/v1')
 class Pundix {
 
   // @logs()
-  @Get('/auth/setup')
-  setup() {
-    console.log('setup')
+  @Post('/auth/setup')
+  setup(req: IncomingMessage) {
+    // console.log(req)
   }
 
   @Post('/auth/token')

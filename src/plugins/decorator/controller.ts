@@ -3,6 +3,7 @@ import path from "path";
 
 import Route from "../routes"
 import { _root_ } from "../../config";
+import { IncomingMessage } from "http";
 
 const route = new Route()
 
@@ -56,7 +57,6 @@ export function Post(value: string) {
   }
 }
 
-
 export default class ControllerDirRead {
   // 读取Controller文件夹
   static dirFileList(): Promise<string[]> {
@@ -74,9 +74,6 @@ export default class ControllerDirRead {
   // 实例化
   static async instantiation() {
     const controllerList = await this.dirFileList()
-
-    console.log(controllerList);
-    
 
     controllerList.forEach(list => import(list))
   }

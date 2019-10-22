@@ -2,38 +2,39 @@ import http, { IncomingMessage, ServerResponse } from 'http'
 import { config, errorCode } from '../config';
 import { routeList } from './routes';
 
-const serverHandler = (req: IncomingMessage, res: ServerResponse) => {
+function getDataJson(req:IncomingMessage) {
+  return new Promise(resolve => {
+    let data: Buffer[] = []
+  
+    req.on('data', chunk => data.push(chunk))
+    
+    req.on('end', () => resolve(Buffer.concat(data).toString()))
+  })
+}
+
+async function serverHandler(req: IncomingMessage, res: ServerResponse) {
   const { method, url } = req as { method: string, url: string }
 
   // 请求方法转换为小写
   const lowerMethodStr = method.toLocaleLowerCase()
   
   res.setHeader('Content-Type', config.contentType)
-  
-  try {
-    routeList.get(`${url} ${lowerMethodStr}`)()
-  } catch (err) {
-    // 找不到接口
+
+  if (!routeList.has(`${url} ${lowerMethodStr}`)) {
     res.statusCode = 404
 
     return res.end()
   }
 
+  let newReq = {}
+  
+  // routeList.get(`${url} ${lowerMethodStr}`)
 
-  // let data: Buffer[] = []
+  const data = await getDataJson(req)
+
+  console.log(data);
   
   
-  // req.on('data', chunk => data.push(chunk))
-  
-  // req.on('end', () => {
-  //   Buffer.concat(data).toString()
-  // })
-  
-  
-  // res.end(`{
-  //   code: 200,
-  //   data: '123'
-  // }`);
 }
 
 const server = http.createServer()
